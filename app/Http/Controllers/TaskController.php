@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -28,7 +29,12 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
 
-        Task::create($validated);
+        $task = Task::create($validated);
+
+        Log::info('Task created', [
+            'task_id' => $task->id,
+            'title' => $task->title,
+        ]);
 
         return redirect()
             ->route('tasks.index')
@@ -51,6 +57,11 @@ class TaskController extends Controller
 
         $task->update($validated);
 
+        Log::info('Task updated', [
+            'task_id' => $task->id,
+            'title' => $task->title,
+        ]);
+
         return redirect()
             ->route('tasks.index')
             ->with('success', 'Task updated successfully.');
@@ -58,6 +69,11 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        Log::info('Task deleted', [
+            'task_id' => $task->id,
+            'title' => $task->title,
+        ]);
+
         $task->delete();
 
         return redirect()
